@@ -1,0 +1,278 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../paper-toast/paper-toast.html">
+
+<link rel="import" href="../../mostly-elements/behaviors/mostly-filters-behavior.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
+
+<!--
+An element for managing a action.
+
+Example:
+
+    <playing-manage-action action="Administrator"></playing-manage-action>
+
+@group Playing Elements
+@element playing-manage-action
+-->
+
+<dom-module id="playing-manage-action">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+      }
+
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .header {
+        @apply --layout-start;
+      }
+
+      .backButton {
+        color: var(--mostly-button-primary, #00adff);
+      }
+
+      .name {
+        margin: 10px 0 5px 5px;
+      }
+
+      .subname {
+        font-weight: normal;
+        margin: 0 0 0 5px;
+      }
+
+      .icon {
+        margin-top: 10px;
+      }
+
+      .actions {
+        @apply --layout-horizontal;
+        @apply --layout-flex;
+        @apply --layout-center;
+        @apply --layout-end-justified;
+      }
+
+      .actions paper-button {
+        margin-left: 1em;
+      }
+
+      paper-button iron-icon {
+        width: 1.3rem;
+        margin-right: .5rem;
+      }
+
+      .remove {
+        color: red;
+        cursor: pointer;
+        font-size: .8rem;
+        margin-left: 10px;
+        text-decoration: underline;
+      }
+
+      playing-view-action {
+        margin: 2em;
+      }
+
+      paper-dialog {
+        min-width: 400px;
+        padding-top: 24px;
+      }
+
+      #errors {
+        color: red;
+        margin-top: 20px;
+      }
+
+      .buttons {
+        @apply --buttons-bar;
+        margin-top: 2em;
+      }
+
+      .confirm {
+        padding: 2em;
+        font-size: 1.1rem;
+      }
+
+      paper-card {
+        @apply --mostly-card;
+      }
+    </style>
+
+    <mostly-resource id="request" path="actions" schemas='*'></mostly-resource>
+    <mostly-resource id="editRequest" path="actions" schemas='*'></mostly-resource>
+
+    <paper-toast id="toast"></paper-toast>
+
+    <paper-card>
+      <div class="header horizontal layout">
+        <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
+        <iron-icon icon="playing:action" class="icon"></iron-icon>
+        <div class="layout vertical">
+          <h3 class="name">[[action.name]]</h3>
+          <h4 class="subname">[[i18n('play.action.heading')]]</h4>
+        </div>
+
+        <div class="actions">
+
+          <!-- delete -->
+          <paper-button noink id="deleteActionButton" class="horizontal layout center" on-tap="_toggleDeleteAction">
+            <iron-icon noink icon="mostly:delete"></iron-icon> [[i18n('command.delete')]]
+          </paper-button>
+
+          <!-- edit -->
+          <paper-button noink id="editActionButton" class="primary horizontal layout center" on-tap="_toggleEditAction">
+            <iron-icon icon="mostly:edit"></iron-icon> [[i18n('play.action.editAction.button')]]
+          </paper-button>
+
+        </div>
+      </div>
+
+      <iron-pages selected="[[page]]" attr-for-selected="name">
+        <section name="viewer">
+          <playing-view-action id="actionViewer" action="[[action]]"></playing-view-action>
+        </section>
+        <section name="editor">
+          <h2>[[i18n('play.action.editAction.heading')]]</h2>
+          <iron-form id="editActionForm">
+            <form class="vertical layout">
+              <playing-edit-action id="actionEditor" action="[[action]]"></playing-edit-action>
+            </form>
+          </iron-form>
+          <div class="horizontal end-justified layout">
+            <div class="flex start-justified">
+              <paper-button noink on-tap="_cancelEditAction">[[i18n('command.cancel')]]</paper-button>
+            </div>
+            <paper-button noink class="primary" on-tap="_submitEditAction">
+              [[i18n('command.save.changes')]]
+            </paper-button>
+          </div>
+        </section>
+    </paper-card>
+
+    <mostly-dialog id="deleteActionDialog" with-backdrop>
+      <h2>[[i18n('play.action.delete.confirm')]]</h2>
+      <div class="buttons horizontal end-justified layout">
+        <div class="flex start-justified">
+          <paper-button noink dialog-dismiss>[[i18n('label.no')]]</paper-button>
+        </div>
+        <paper-button noink class="primary" on-tap="_deleteAction">[[i18n('label.yes')]]</paper-button>
+      </div>
+    </mostly-dialog>
+
+  </template>
+
+  <script>
+    class PlayingManageAction extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-manage-action' };
+
+      static get properties() {
+        return {
+          /**
+           * The action manage page to be displayed.
+           */
+          page: {
+            type: String,
+            value: 'viewer',
+            notify: true
+          },
+
+          action: {
+            type: Object,
+            observer: '_fetch'
+          },
+
+          empty: Boolean,
+
+          readonly: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          errors: {
+            type: String,
+            reflectToAttribute: true
+          }
+        }
+      }
+
+      ready() {
+        super.ready();
+        this.$.editActionForm.addEventListener('iron-form-presubmit', (event) => {
+          event.preventDefault();
+          this._saveAction();
+        });
+      }
+
+      _fetch() {
+        if (typeof this.action === 'string') {
+          this.$.request.get().then((response) => {
+            this.action = response.data;
+          });
+        }
+      }
+
+      _toggleDialog(e) {
+        this.$.dialog.toggle();
+      }
+
+      _toggleEditAction() {
+        this.page = (this.page === 'viewer')? 'editor' : 'viewer';
+      }
+
+      _cancelEditAction() {
+        this.page = 'viewer';
+      }
+
+      _submitEditAction() {
+        this.$.editActionForm.submit();
+      }
+
+      _saveAction() {
+        this.page = 'viewer';
+        var editedAction = JSON.parse(JSON.stringify(this.action));
+        this.$.editRequest.data = editedAction;
+        this.$.editRequest.patch().then((response) => {
+          this.action = response.data;
+          this._toast(this.i18n('play.action.updated'));
+        });
+      }
+
+      _toggleDeleteAction() {
+        this.$.deleteActionDialog.toggle();
+      }
+
+      _deleteAction() {
+        this.$.deleteActionDialog.toggle();
+        this.$.editRequest.remove().then((response) => {
+          this.fire('playing-action-deleted', this.action);
+          this._goHome();
+        });
+      }
+
+      _goHome() {
+        this.page = 'viewer';
+        this.fire('goHome');
+      }
+
+      _toast(msg) {
+        this.$.toast.text = msg;
+        this.$.toast.open();
+      }
+    }
+
+    customElements.define(PlayingManageAction.is, PlayingManageAction);
+  </script>
+</dom-module>

@@ -1,0 +1,92 @@
+<!--
+An element for displaying action metric data.
+
+Example:
+
+    <playing-view-action metric=[[metric]] new></playing-view-action>
+
+@group Playing Elements
+@element playing-view-action
+-->
+<dom-module id="playing-view-action">
+  <template>
+    <style include="mostly-styles">
+      :host {
+        display: block;
+      }
+
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
+
+      label {
+        @apply --mostly-label;
+      }
+
+      div.multiline {
+        white-space: pre-line;
+      }
+
+      div {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        -o-hyphens: auto;
+        hyphens: auto;
+      }
+    </style>
+    
+    <div role="widget" hidden$="[[!metric.description]]">
+      <label>[[i18n('play.metric.field.description')]]</label>
+      <div name="description" class="multiline">[[metric.description]]</div>
+    </div>
+
+    <div role="widget" hidden$="[[!metric.image]]">
+      <label>[[i18n('play.metric.field.image')]]</label>
+      <img id="image" src$="[[metric.image.url]]">
+    </div>
+
+    <div role="widget">
+      <label>[[i18n('play.metric.field.constraints')]]</label>
+      <div class="table">
+        <div class="table-header">
+          <div class="flex">[[i18n('play.metric.action.constraints.minimum')]]</div>
+          <div class="flex">[[i18n('play.metric.action.constraints.maximum')]]</div>
+          <div class="flex">[[i18n('play.metric.action.constraints.default')]]</div>
+        </div>
+        <div class="table-rows">
+          <div class="table-row">
+            <div class="flex">[[metric.constraints.minimum]]</div>
+            <div class="flex">[[metric.constraints.maximum]]</div>
+            <div class="flex">[[metric.constraints.default]]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    class PlayingViewAction extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-view-action' };
+
+      static get properties() {
+        return {
+          /**
+           * The metric object to be displayed.
+           */
+          metric: {
+            type: Object,
+            value: {}
+          }
+        }
+      }
+    }
+
+    customElements.define(PlayingViewAction.is, PlayingViewAction);
+  </script>
+</dom-module>
