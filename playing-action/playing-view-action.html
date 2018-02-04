@@ -1,9 +1,9 @@
 <!--
-An element for displaying action metric data.
+An element for displaying action data.
 
 Example:
 
-    <playing-view-action metric=[[metric]] new></playing-view-action>
+    <playing-view-action action=[[action]] new></playing-view-action>
 
 @group Playing Elements
 @element playing-view-action
@@ -39,29 +39,29 @@ Example:
       }
     </style>
     
-    <div role="widget" hidden$="[[!metric.description]]">
-      <label>[[i18n('play.metric.field.description')]]</label>
-      <div name="description" class="multiline">[[metric.description]]</div>
+    <div role="widget" hidden$="[[!action.description]]">
+      <label>[[i18n('play.action.field.description')]]</label>
+      <div name="description" class="multiline">[[action.description]]</div>
     </div>
 
-    <div role="widget" hidden$="[[!metric.image]]">
-      <label>[[i18n('play.metric.field.image')]]</label>
-      <img id="image" src$="[[metric.image.url]]">
+    <div role="widget" hidden$="[[!action.image]]">
+      <label>[[i18n('play.action.field.image')]]</label>
+      <img id="image" src$="[[action.image.url]]">
     </div>
 
     <div role="widget">
-      <label>[[i18n('play.metric.field.constraints')]]</label>
+      <label>[[i18n('play.action.field.constraints')]]</label>
       <div class="table">
         <div class="table-header">
-          <div class="flex">[[i18n('play.metric.action.constraints.minimum')]]</div>
-          <div class="flex">[[i18n('play.metric.action.constraints.maximum')]]</div>
-          <div class="flex">[[i18n('play.metric.action.constraints.default')]]</div>
+          <div class="flex">[[i18n('play.action.constraints.minimum')]]</div>
+          <div class="flex">[[i18n('play.action.constraints.maximum')]]</div>
+          <div class="flex">[[i18n('play.action.constraints.default')]]</div>
         </div>
         <div class="table-rows">
           <div class="table-row">
-            <div class="flex">[[metric.constraints.minimum]]</div>
-            <div class="flex">[[metric.constraints.maximum]]</div>
-            <div class="flex">[[metric.constraints.default]]</div>
+            <div class="flex">[[action.constraints.minimum]]</div>
+            <div class="flex">[[action.constraints.maximum]]</div>
+            <div class="flex">[[action.constraints.default]]</div>
           </div>
         </div>
       </div>
@@ -77,9 +77,9 @@ Example:
       static get properties() {
         return {
           /**
-           * The metric object to be displayed.
+           * The action object to be displayed.
            */
-          metric: {
+          action: {
             type: Object,
             value: {}
           }
