@@ -1,6 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-toast/paper-toast.html">
@@ -9,7 +8,9 @@
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-card.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 
 <link rel="import" href="playing-edit-action.html">
 <link rel="import" href="playing-view-action.html">
@@ -32,6 +33,10 @@ Example:
         display: block;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       label {
         font-weight: bold;
         margin-bottom: 5px;
@@ -39,6 +44,7 @@ Example:
 
       .header {
         @apply --layout-start;
+        padding: 0px;
       }
 
       .backButton {
@@ -82,8 +88,8 @@ Example:
         text-decoration: underline;
       }
 
-      playing-view-action {
-        margin: 2em;
+      #viewer, #editor {
+        margin: 1em;
       }
 
       paper-dialog {
@@ -105,10 +111,6 @@ Example:
         padding: 2em;
         font-size: 1.1rem;
       }
-
-      paper-card {
-        @apply --mostly-card;
-      }
     </style>
 
     <mostly-resource id="request" path="actions" schemas='*'></mostly-resource>
@@ -116,7 +118,7 @@ Example:
 
     <paper-toast id="toast"></paper-toast>
 
-    <paper-card>
+    <mostly-card>
       <div class="header horizontal layout">
         <paper-icon-button class="backButton" icon="icons:arrow-back" on-tap="_goHome"></paper-icon-button>
         <iron-icon icon="playing:task" class="icon"></iron-icon>
@@ -140,15 +142,19 @@ Example:
         </div>
       </div>
 
-      <iron-pages selected="[[page]]" attr-for-selected="name">
-        <section name="viewer">
-          <playing-view-action id="actionViewer" action="[[action]]"></playing-view-action>
+      <div id="errors" hidden$="[[!errors]]">[[errors]]</div>
+
+      <iron-pages selected="[[page]]" attr-for-selected="id">
+        <section id="viewer">
+          <mostly-layout id="viewerLayout" href="[[_layoutHref('view')]]"
+                  model="[[_layoutModel(action, new)]]"></mostly-layout>
         </section>
-        <section name="editor">
+        <section id="editor">
           <h2>[[i18n('play.action.editAction.heading')]]</h2>
           <iron-form id="editActionForm">
             <form class="vertical layout">
-              <playing-edit-action id="actionEditor" action="[[action]]"></playing-edit-action>
+              <mostly-layout id="viewerLayout" href="[[_layoutHref('edit')]]"
+                      model="[[_layoutModel(action, new)]]"></mostly-layout>
             </form>
           </iron-form>
           <div class="horizontal end-justified layout">
@@ -160,7 +166,7 @@ Example:
             </paper-button>
           </div>
         </section>
-    </paper-card>
+    </mostly-card>
 
     <mostly-dialog id="deleteActionDialog" with-backdrop>
       <h2>[[i18n('play.action.delete.confirm')]]</h2>
@@ -225,6 +231,17 @@ Example:
             this.action = response.data;
           });
         }
+      }
+
+      _layoutHref(type, layout) {
+        return type && this.resolveUrl(`playing-${layout}-action.html`);
+      }
+
+      _layoutModel() {
+        return {
+          action: this.action,
+          "new": true
+        };
       }
 
       _toggleDialog(e) {
