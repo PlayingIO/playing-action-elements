@@ -233,8 +233,8 @@ Example:
         }
       }
 
-      _layoutHref(type, layout) {
-        return type && this.resolveUrl(`playing-${layout}-action.html`);
+      _layoutHref(layout) {
+        return layout && this.resolveUrl(`playing-${layout}-action.html`);
       }
 
       _layoutModel() {
