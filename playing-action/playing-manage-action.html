@@ -5,6 +5,7 @@
 <link rel="import" href="../../paper-toast/paper-toast.html">
 
 <link rel="import" href="../../mostly-elements/behaviors/mostly-filters-behavior.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-connection.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
@@ -182,7 +183,7 @@ Example:
 
   <script>
     class PlayingManageAction extends Polymer.mixinBehaviors(
-        [Mostly.I18nBehavior, Mostly.FiltersBehavior], Polymer.Element) {
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior, Mostly.FuncBehavior], Polymer.Element) {
 
       static get is() { return 'playing-manage-action' };
 
@@ -197,10 +198,18 @@ Example:
             notify: true
           },
 
+          /**
+           * the current action
+           */
           action: {
             type: Object,
             observer: '_fetch'
           },
+
+          /**
+           * original action object
+           */
+          origAction: Object,
 
           empty: Boolean,
 
@@ -229,6 +238,7 @@ Example:
         if (typeof this.action === 'string') {
           this.$.request.get().then((response) => {
             this.action = response.data;
+            this.origAction = this.fp.clone(this.action);
           });
         }
       }
@@ -249,10 +259,15 @@ Example:
       }
 
       _toggleEditAction() {
-        this.page = (this.page === 'viewer')? 'editor' : 'viewer';
+        if (this.page === 'viewer') {
+          this.page = 'editor';
+        } else {
+          this._cancelEditAction();
+        }
       }
 
       _cancelEditAction() {
+        this.set('action', this.fp.clone(this.origAction));
         this.page = 'viewer';
       }
 
