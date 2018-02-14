@@ -1,3 +1,5 @@
+<link rel="import" href="../behaviors/playing-action-behavior.html">
+
 <!--
 An element for displaying action data.
 
@@ -55,7 +57,8 @@ Example:
   </template>
 
   <script>
-    class PlayingViewAction extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingViewAction extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.ActionBehavior], Polymer.Element) {
 
       static get is() { return 'playing-view-action' };
 

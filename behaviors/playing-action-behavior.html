@@ -1,0 +1,38 @@
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
+
+<script>
+  var Playing = Playing || {};
+
+  /**
+   * @polymerBehavior Playing.ActionBehavior
+   */
+  Playing.ActionBehavior = [Mostly.FuncBehavior, {
+
+    properties: {
+      /**
+       * rate limiting windows
+       */
+      rateWindows: {
+        type: Array,
+        value: ['fixed', 'rolling', 'leaky']
+      },
+
+      /**
+       * rate limiting windows
+       */
+      rateIntervals: {
+        type: Array,
+        value: ['minute', 'hour', 'day', 'week', 'month', 'year']
+      }
+    },
+
+    actionPath(action) {
+      if (action && action.id) {
+        return 'actions/' + action.id;
+      } else {
+        return 'actions/' + action;
+      }
+    }
+
+  }];
+</script>

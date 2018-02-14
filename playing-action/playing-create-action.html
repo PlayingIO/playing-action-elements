@@ -13,6 +13,11 @@
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 
+<link rel="import" href="../../playing-elements/playing-styles.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-edit-rewardsets.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-edit-variables.html">
+
+<link rel="import" href="../behaviors/playing-action-behavior.html">
 <link rel="import" href="playing-edit-action.html">
 
 <!--
@@ -109,7 +114,8 @@
   </template>
 
   <script>
-    class PlayingCreateAction extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingCreateAction extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.ActionBehavior], Polymer.Element) {
 
       static get is() { return 'playing-create-action' };
 
@@ -117,7 +123,13 @@
         return {
           action: {
             type: Object,
-            value: () => { return { constraints: {} } }
+            value: () => {
+              return {
+                rate: {},
+                rules: [],
+                variables: []
+              };
+            }
           },
 
           errors: {

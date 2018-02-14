@@ -13,6 +13,13 @@
 <link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-input.html">
 
+<link rel="import" href="../../playing-elements/playing-styles.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-edit-rewardsets.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-edit-variables.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-view-rewardsets.html">
+<link rel="import" href="../../playing-rule-elements/playing-rule/playing-view-variables.html">
+
+<link rel="import" href="../behaviors/playing-action-behavior.html">
 <link rel="import" href="playing-edit-action.html">
 <link rel="import" href="playing-view-action.html">
 
@@ -114,8 +121,8 @@ Example:
       }
     </style>
 
-    <mostly-resource id="request" path="actions" schemas='*'></mostly-resource>
-    <mostly-resource id="editRequest" path="actions" schemas='*'></mostly-resource>
+    <mostly-resource id="request" path="[[path]]" schemas='*'></mostly-resource>
+    <mostly-resource id="editRequest" path="[[path]]" schemas='*'></mostly-resource>
 
     <paper-toast id="toast"></paper-toast>
 
@@ -183,7 +190,7 @@ Example:
 
   <script>
     class PlayingManageAction extends Polymer.mixinBehaviors(
-        [Mostly.I18nBehavior, Mostly.FiltersBehavior, Mostly.FuncBehavior], Polymer.Element) {
+        [Mostly.I18nBehavior, Mostly.FiltersBehavior, Playing.ActionBehavior], Polymer.Element) {
 
       static get is() { return 'playing-manage-action' };
 
@@ -210,6 +217,11 @@ Example:
            * original action object
            */
           origAction: Object,
+
+          path: {
+            type: String,
+            computed: 'actionPath(action)'
+          },
 
           empty: Boolean,
 
