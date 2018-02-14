@@ -12,7 +12,7 @@ Example:
 -->
 <dom-module id="playing-view-action">
   <template>
-    <style include="mostly-styles">
+    <style include="mostly-styles playing-styles">
       :host {
         display: block;
       }
@@ -36,23 +36,37 @@ Example:
       <img id="image" src$="[[action.image.url]]">
     </div>
 
-    <div role="widget">
-      <label>[[i18n('play.action.field.constraints')]]</label>
-      <div class="table">
-        <div class="table-header">
-          <div class="flex">[[i18n('play.action.constraints.minimum')]]</div>
-          <div class="flex">[[i18n('play.action.constraints.maximum')]]</div>
-          <div class="flex">[[i18n('play.action.constraints.default')]]</div>
-        </div>
-        <div class="table-rows">
-          <div class="table-row">
-            <div class="flex">[[action.constraints.minimum]]</div>
-            <div class="flex">[[action.constraints.maximum]]</div>
-            <div class="flex">[[action.constraints.default]]</div>
-          </div>
-        </div>
+    <!-- variables -->
+    <playing-view-variables data=[[action.variables]]></playing-view-variables>
+
+    <!-- change & rate limiting -->
+    <div class="layout vertical">
+      <label role="widget">[[i18n('play.action.rate')]]</label>
+
+      <div role="widget">
+        <iron-icon class="heading" icon="playing:tick"></iron-icon>
+        [[i18n('play.action.chance.desc')]]
+        <span class="action-object action-chance">[[action.chance]]%</span>.
+      </div>
+
+      <div role="widget" hidden$="[[!action.rate.window]]">
+        <iron-icon class="heading" icon="playing:tick"></iron-icon>
+        [[i18n('play.action.rate.window.desc')]]
+        <span class="action-object action-chance">[[action.rate.count]]</span>
+        <span>[[i18n('play.action.rate.frequency.heading')]]</span>
+        <span class="action-object action-interval">
+          [[action.rate.frequency]]
+          [[p18n('play.action.rate.interval', action.rate.interval)]]
+        </span>&nbsp;
+        <span class="action-window">
+          [[i18n('play.action.rate.window.prefix')]]
+          [[p18n('play.action.rate.window', action.rate.window)]]
+        </span>.
       </div>
     </div>
+
+    <!-- rewards & conditions -->
+    <playing-view-rewardsets data=[[action.rules]]></playing-view-rewardsets>
 
   </template>
 
