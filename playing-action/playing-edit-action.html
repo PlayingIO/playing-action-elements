@@ -1,3 +1,5 @@
+<link rel="import" href="../behaviors/playing-action-behavior.html">
+
 <!--
 An element for creating and editing action action data.
 
@@ -10,7 +12,7 @@ Example:
 -->
 <dom-module id="playing-edit-action">
   <template>
-    <style include="mostly-styles">
+    <style include="mostly-styles playing-styles">
       :host {
         display: block;
       }
@@ -24,10 +26,83 @@ Example:
       <mostly-input name="description" label="[[i18n('play.action.field.description')]]"
             value="{{action.description}}" maxlength="300"
             char-counter always-float-label></mostly-input>
+
       <playing-dropzone name="image" role="widget"
               label="[[i18n('play.action.field.image')]]"
               document="{{action}}" xpath="image"></playing-dropzone>
     </div>
+
+    <!-- variables -->
+    <playing-edit-variables data={{action.variables}}></playing-edit-variables>
+
+    <!-- change & rate limiting -->
+    <div class="layout vertical">
+      <label role="widget">[[i18n('play.action.rate')]]</label>
+
+      <div class="form-row">
+        <div class="flex">
+          <mostly-input type="number" label="[[i18n('play.action.chance')]]"
+                  placeholder="100" min="0" max="100"
+                  value="{{action.chance}}">
+            <div slot="suffix">%</div>
+          </mostly-input>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="flex">
+          <mostly-select
+                  label="[[i18n('play.action.rate.window')]]"
+                  placeholder="[[i18n('play.action.rate.window.placeholder')]]"
+                  selected="{{action.rate.window}}"
+                  attr-for-selected="name">
+            <template is="dom-repeat" items="[[rateWindows]]" as="item">
+              <paper-item name="[[item]]">[[p18n('play.action.rate.window', item)]]</paper-item>
+            </template>
+          </mostly-select>
+        </div>
+        <div class="form-buttons">
+          <iron-icon icon="mostly:remove" class="remove"
+                  on-tap="_removeRate"></iron-icon>
+        </div>
+      </div>
+
+      <template is="dom-if" if="[[action.rate.window]]" restamp>
+        <div class="form-row">
+          <div class="flex">
+            <mostly-input type="number"
+                    label="[[i18n('play.action.rate.count')]]"
+                    value="{{action.rate.count}}"
+                    required="[[action.rate.window]]"></mostly-input>
+          </div>
+          <div class="form-buttons">
+            <span class="mini-tag">[[i18n('play.action.rate.frequency.heading')]]</span>
+          </div>
+          <div class="flex">
+            <mostly-input type="number"
+                    label="[[i18n('play.action.rate.frequency')]]"
+                    value="{{action.rate.frequency}}"
+                    required="[[action.rate.window]]"></mostly-input>
+          </div>
+          <div class="flex">
+            <mostly-select
+                    label="[[i18n('play.action.rate.interval')]]"
+                    placeholder="[[i18n('play.action.rate.interval.placeholder')]]"
+                    selected="{{action.rate.interval}}"
+                    attr-for-selected="name"
+                    required="[[action.rate.window]]">
+              <template is="dom-repeat" items="[[rateIntervals]]" as="item">
+                <paper-item name="[[item]]">[[p18n('play.action.rate.interval', item)]]</paper-item>
+              </template>
+            </mostly-select>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- rewards & conditions -->
+    <playing-edit-rewardsets data={{action.rules}}></playing-edit-rewardsets>
+
 
     <mostly-collapse-button role="widget">
       <div slot="collapse-trigger">[[i18n('play.action.advanced')]]</div>
@@ -36,32 +111,14 @@ Example:
         <playing-tag-suggestion path="actions" target="[[action]]" allow-new-tags
                 placeholder="[[i18n('playing.tags.placeholder')]]">
         </playing-tag-suggestion>
-
-        <label>[[i18n('play.action.field.constraints')]]</label>
-        <div class="form-row">
-          <div class="flex">
-            <paper-input name="constraints.minimum" label="[[i18n('play.action.action.constraints.minimum')]]"
-                  type="number" value="{{action.constraints.minimum}}" always-float-label></paper-input>
-          </div>
-          <div class="flex">
-            <paper-input name="constraints.maximum" label="[[i18n('play.action.action.constraints.maximum')]]"
-                  type="number" value="{{action.constraints.maximum}}" always-float-label></paper-input>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="flex">
-            <paper-input name="constraints.default" label="[[i18n('play.action.action.constraints.default')]]"
-                  type="number" value="{{action.constraints.default}}" always-float-label></paper-input>
-          </div>
-          <div class="flex">&nbsp;</div>
-        </div>
       </div>
     </mostly-collapse-button>
 
   </template>
 
   <script>
-    class PlayingEditAction extends Polymer.mixinBehaviors([Mostly.I18nBehavior], Polymer.Element) {
+    class PlayingEditAction extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.ActionBehavior], Polymer.Element) {
 
       static get is() { return 'playing-edit-action' };
 
@@ -83,6 +140,10 @@ Example:
             value: false
           }
         }
+      }
+
+      _removeRate() {
+        this.set('action.rate', {});
       }
     }
 
