@@ -156,6 +156,7 @@
       }
 
       _goHome() {
+        this._resetFields();
         this.fire('goHome');
       }
 
@@ -197,12 +198,11 @@
       }
 
       _cancel() {
-        this._resetFields();
         this._goHome();
       }
 
       _resetFields() {
-        this.action = {};
+        this.action = { rate: {}, rules: [], variables: [] };
         this.errors = '';
       }
 
