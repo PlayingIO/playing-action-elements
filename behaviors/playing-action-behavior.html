@@ -32,6 +32,19 @@
       } else {
         return 'actions/' + action;
       }
+    },
+
+    emptyAction() {
+      return { rate: {}, rules: [], variables: [] };
+    },
+
+    resetFields() {
+      this.action = this.emptyAction();
+      this.errors = '';
+    },
+
+    hasErrors() {
+      return this.errors !== '';
     }
 
   }];

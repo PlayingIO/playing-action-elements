@@ -100,7 +100,7 @@
             </paper-button>
           </div>
 
-          <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+          <span id="errors" hidden$="[[!hasErrors(errors)]]">[[errors]]</span>
 
         </form>
       </iron-form>
@@ -118,12 +118,8 @@
         return {
           action: {
             type: Object,
-            value: () => {
-              return {
-                rate: {},
-                rules: [],
-                variables: []
-              };
+            value() {
+              return this.emptyAction();
             }
           },
 
@@ -155,7 +151,7 @@
       }
 
       _goHome() {
-        this._resetFields();
+        this.resetFields();
         this.fire('goHome');
       }
 
@@ -180,7 +176,7 @@
        */
       _create() {
         this._doCreate(this.action).then((action) => {
-          this._resetFields();
+          this.resetFields();
           if (!this._createAnother) {
             this._goHome();
           }
@@ -198,15 +194,6 @@
 
       _cancel() {
         this._goHome();
-      }
-
-      _resetFields() {
-        this.action = { rate: {}, rules: [], variables: [] };
-        this.errors = '';
-      }
-
-      _hasErrors() {
-        return this.errors !== '';
       }
     }
 
