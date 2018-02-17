@@ -1,0 +1,118 @@
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
+
+<!--
+An element for creating and editing rate data.
+
+Example:
+
+    <playing-edit-rate rate=[[rate]] new></playing-edit-rate>
+
+@group Playing Elements
+@element playing-edit-rate
+-->
+<dom-module id="playing-edit-rate">
+  <template>
+    <style include="mostly-styles playing-styles">
+      :host {
+        display: block;
+      }
+
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
+    </style>
+
+    <div class="layout vertical">
+      <label>[[i18n('play.action.rate')]]</label>
+
+      <div class="form-row">
+        <div class="flex">
+          <mostly-select
+                  label="[[i18n('play.action.rate.window')]]"
+                  placeholder="[[i18n('play.action.rate.window.placeholder')]]"
+                  selected="{{rate.window}}"
+                  attr-for-selected="name">
+            <template is="dom-repeat" items="[[rateWindows]]" as="item">
+              <paper-item name="[[item]]">[[p18n('play.action.rate.window', item)]]</paper-item>
+            </template>
+          </mostly-select>
+        </div>
+        <div class="form-buttons">
+          <iron-icon icon="mostly:remove" class="remove" on-tap="_removeRate"></iron-icon>
+        </div>
+      </div>
+
+      <template is="dom-if" if="[[rate.window]]" restamp>
+        <div class="form-row">
+          <div class="flex">
+            <mostly-input type="number"
+                    label="[[i18n('play.action.rate.count')]]"
+                    value="{{rate.count}}"
+                    required="[[rate.window]]"></mostly-input>
+          </div>
+          <div class="flex">
+            <mostly-input type="number"
+                    label="[[i18n('play.action.rate.frequency')]]"
+                    value="{{rate.frequency}}"
+                    required="[[rate.window]]"></mostly-input>
+          </div>
+          <div class="flex">
+            <mostly-select
+                    label="[[i18n('play.action.rate.interval')]]"
+                    placeholder="[[i18n('play.action.rate.interval.placeholder')]]"
+                    selected="{{rate.interval}}"
+                    attr-for-selected="name"
+                    required="[[rate.window]]">
+              <template is="dom-repeat" items="[[rateIntervals]]" as="item">
+                <paper-item name="[[item]]">[[p18n('play.action.rate.interval', item)]]</paper-item>
+              </template>
+            </mostly-select>
+          </div>
+        </div>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    class PlayingEditRate extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Mostly.FuncBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-edit-rate' };
+
+      static get properties() {
+        return {
+          /**
+           * The rate object
+           */
+          rate: {
+            type: Object,
+            value: {}
+          },
+
+          /**
+           * rate limiting windows
+           */
+          rateWindows: {
+            type: Array,
+            value: ['fixed', 'rolling', 'leaky']
+          },
+
+          /**
+           * rate limiting windows
+           */
+          rateIntervals: {
+            type: Array,
+            value: ['minute', 'hour', 'day', 'week', 'month', 'year']
+          }
+        }
+      }
+
+      _removeRate() {
+        this.set('rate', {});
+      }
+    }
+
+    customElements.define(PlayingEditRate.is, PlayingEditRate);
+  </script>
+</dom-module>

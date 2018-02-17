@@ -9,21 +9,6 @@
   Playing.ActionBehavior = [Mostly.FuncBehavior, {
 
     properties: {
-      /**
-       * rate limiting windows
-       */
-      rateWindows: {
-        type: Array,
-        value: ['fixed', 'rolling', 'leaky']
-      },
-
-      /**
-       * rate limiting windows
-       */
-      rateIntervals: {
-        type: Array,
-        value: ['minute', 'hour', 'day', 'week', 'month', 'year']
-      }
     },
 
     actionPath(action) {
