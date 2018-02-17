@@ -1,6 +1,7 @@
 <link rel="import" href="../../playing-rule-elements/playing-rule/playing-view-rewardsets.html">
 <link rel="import" href="../../playing-rule-elements/playing-rule/playing-view-variables.html">
 <link rel="import" href="../behaviors/playing-action-behavior.html">
+<link rel="import" href="playing-view-rate.html">
 
 <!--
 An element for displaying action data.
@@ -41,31 +42,18 @@ Example:
     <!-- variables -->
     <playing-view-variables data=[[action.variables]]></playing-view-variables>
 
-    <!-- change & rate limiting -->
-    <div class="layout vertical">
-      <label role="widget">[[i18n('play.action.rate')]]</label>
-
-      <div role="widget">
+    <!-- chance -->
+    <div role="widget" class="layout vertical">
+      <label>[[i18n('play.action.chance')]]</label>
+      <div>
         <iron-icon class="heading" icon="playing:tick"></iron-icon>
         [[i18n('play.action.chance.desc')]]
         <span class="action-object action-chance">[[action.chance]]%</span>.
       </div>
-
-      <div role="widget" hidden$="[[!action.rate.window]]">
-        <iron-icon class="heading" icon="playing:tick"></iron-icon>
-        [[i18n('play.action.rate.window.desc')]]
-        <span class="action-object action-chance">[[action.rate.count]]</span>
-        <span>[[i18n('play.action.rate.frequency.heading')]]</span>
-        <span class="action-object action-interval">
-          [[action.rate.frequency]]
-          [[p18n('play.action.rate.interval', action.rate.interval)]]
-        </span>&nbsp;
-        <span class="action-window">
-          [[i18n('play.action.rate.window.prefix')]]
-          [[p18n('play.action.rate.window', action.rate.window)]]
-        </span>.
-      </div>
     </div>
+    
+    <!-- rate limiting -->
+    <playing-view-rate rate="{{action.rate}}"></playing-view-rate>
 
     <!-- rewards & conditions -->
     <playing-view-rewardsets data=[[action.rules]]></playing-view-rewardsets>

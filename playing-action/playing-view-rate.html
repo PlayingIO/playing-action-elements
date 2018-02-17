@@ -1,0 +1,71 @@
+<link rel="import" href="../../mostly-elements/behaviors/mostly-func-behavior.html">
+
+<!--
+An element for displaying rate data.
+
+Example:
+
+    <playing-view-rate rate=[[rate]] new></playing-view-rate>
+
+@group Playing Elements
+@element playing-view-rate
+-->
+<dom-module id="playing-view-rate">
+  <template>
+    <style include="mostly-styles playing-styles">
+      :host {
+        display: block;
+      }
+
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
+
+      label {
+        @apply --mostly-label;
+      }
+    </style>
+
+    <div role="widget" class="layout vertical">
+      <label>[[i18n('play.action.rate')]]</label>
+
+      <div role="widget" hidden$="[[!rate.window]]">
+        <iron-icon class="heading" icon="playing:tick"></iron-icon>
+        [[i18n('play.action.rate.window.desc')]]
+        <span class="action-object action-chance">[[rate.count]]</span>
+        <span>[[i18n('play.action.rate.frequency.heading')]]</span>
+        <span class="action-object action-interval">
+          [[rate.frequency]]
+          [[p18n('play.action.rate.interval', rate.interval)]]
+        </span>&nbsp;
+        <span class="action-window">
+          [[i18n('play.action.rate.window.prefix')]]
+          [[p18n('play.action.rate.window', rate.window)]]
+        </span>.
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    class PlayingViewRate extends Polymer.mixinBehaviors(
+        [Mostly.I18nBehavior, Playing.ActionBehavior], Polymer.Element) {
+
+      static get is() { return 'playing-view-rate' };
+
+      static get properties() {
+        return {
+          /**
+           * The rate object to be displayed.
+           */
+          rate: {
+            type: Object,
+            value: {}
+          }
+        }
+      }
+    }
+
+    customElements.define(PlayingViewRate.is, PlayingViewRate);
+  </script>
+</dom-module>
