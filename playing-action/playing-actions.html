@@ -75,7 +75,7 @@ An element for managing actions in Playing game services.
 
           <section name="manage-action">
             <playing-manage-action id="actionManager"
-                    action="[[selectedAction.id]]"
+                    action="[[selectedAction]]"
                     readonly$="[[readonly]]"></playing-manage-action>
           </section>
         </iron-pages>
@@ -91,6 +91,11 @@ An element for managing actions in Playing game services.
 
       static get properties() {
         return {
+          visible: {
+            type: Boolean,
+            observer: '_visibleChanged'
+          },
+
           /**
            * The action manage page to be displayed.
            */
@@ -98,6 +103,19 @@ An element for managing actions in Playing game services.
             type: String,
             value: 'search',
             notify: true
+          },
+
+          entity: {
+            type: Object,
+            value: {},
+            observer: '_entityChanged'
+          },
+
+          /**
+           * Selected action id.
+           */
+          selectedAction: {
+            type: String
           },
 
           /**
@@ -122,6 +140,27 @@ An element for managing actions in Playing game services.
         this.addEventListener('manageAction', this._manageAction);
       }
 
+      _entityChanged() {
+        if (!this.visible) return;
+        if (this.entity && this.entity.id && this.entity.type) {
+          if (this.entity.type === 'action') {
+            this.selectedAction = null;
+            this.selectedAction = this.entity.id;
+            this.page = 'manage-action';
+          }
+        } else {
+          this.$$('playing-action-search')._searchTermChanged();
+        }
+      }
+
+      _visibleChanged() {
+        if (this.visible) {
+          this.async(() => {
+            this._entityChanged();
+          });
+        }
+      }
+
       /**
        * Go to the 'search' page.
        */
@@ -141,9 +180,8 @@ An element for managing actions in Playing game services.
       }
 
       _manageAction(e) {
-        this.selectedAction = null;
-        this.selectedAction = e.detail.action;
-        this.page = 'manage-action';
+        var url = 'action-management/action/' + e.detail.action;
+        this.navigateTo('play', url);
       }
 
       _hasAdministrationPermissions(user) {
