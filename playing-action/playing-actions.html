@@ -143,7 +143,7 @@ An element for managing actions in Playing game services.
       _entityChanged() {
         if (!this.visible) return;
         if (this.entity && this.entity.id && this.entity.type) {
-          if (this.entity.type === 'action') {
+          if (this.entity.route === 'action-management') {
             this.selectedAction = null;
             this.selectedAction = this.entity.id;
             this.page = 'manage-action';
