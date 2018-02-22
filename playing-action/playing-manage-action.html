@@ -77,15 +77,15 @@ Example:
 
       <iron-pages selected="[[page]]" attr-for-selected="id">
         <section id="viewer">
-          <mostly-layout id="viewerLayout" href="[[_layoutHref('view')]]"
-                  model="[[_layoutModel(action, new)]]"></mostly-layout>
+          <mostly-layout id="viewerLayout" href="[[layoutHref('view')]]"
+                  model="[[layoutModel(action, new)]]"></mostly-layout>
         </section>
         <section id="editor">
           <h3>[[i18n('play.action.editAction.heading')]]</h3>
           <iron-form id="editActionForm">
             <form class="vertical layout">
-              <mostly-layout id="viewerLayout" href="[[_layoutHref('edit')]]"
-                      model="[[_layoutModel(action, new)]]"></mostly-layout>
+              <mostly-layout id="viewerLayout" href="[[layoutHref('edit')]]"
+                      model="[[layoutModel(action, new)]]"></mostly-layout>
             </form>
           </iron-form>
           <div class="horizontal end-justified layout">
@@ -176,17 +176,6 @@ Example:
             this.origAction = this.fp.clone(this.action);
           });
         }
-      }
-
-      _layoutHref(layout) {
-        return layout && this.resolveUrl(`playing-${layout}-action.html`);
-      }
-
-      _layoutModel() {
-        return {
-          action: this.action,
-          "new": true
-        };
       }
 
       _toggleDialog(e) {

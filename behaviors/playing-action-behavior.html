@@ -19,6 +19,17 @@
       }
     },
 
+    layoutHref(layout) {
+      return layout && this.resolveUrl(`playing-${layout}-action.html`);
+    },
+
+    layoutModel() {
+      return {
+        action: this.action,
+        "new": true
+      };
+    },
+
     emptyAction() {
       return { rate: {}, rules: [], variables: [] };
     },
