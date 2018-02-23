@@ -18,55 +18,58 @@ Example:
       }
     </style>
 
-    <div class="layout vertical">
-      <label>[[i18n('play.action.rate')]]</label>
+    <mostly-collapse-button role="widget" opened="[[opened]]">
+      <div slot="collapse-trigger">[[i18n('play.action.rate')]]</div>
+      <div slot="collapse-content">
+        <div class="layout vertical">
+          <div class="form-row">
+            <div class="flex">
+              <mostly-select
+                      label="[[i18n('play.action.rate.window')]]"
+                      placeholder="[[i18n('play.action.rate.window.placeholder')]]"
+                      selected="{{rate.window}}"
+                      attr-for-selected="name">
+                <template is="dom-repeat" items="[[rateWindows]]" as="item">
+                  <paper-item name="[[item]]">[[p18n('play.action.rate.window', item)]]</paper-item>
+                </template>
+              </mostly-select>
+            </div>
+            <div class="form-actions">
+              <iron-icon icon="mostly:remove" class="remove" on-tap="_removeRate"></iron-icon>
+            </div>
+          </div>
 
-      <div class="form-row">
-        <div class="flex">
-          <mostly-select
-                  label="[[i18n('play.action.rate.window')]]"
-                  placeholder="[[i18n('play.action.rate.window.placeholder')]]"
-                  selected="{{rate.window}}"
-                  attr-for-selected="name">
-            <template is="dom-repeat" items="[[rateWindows]]" as="item">
-              <paper-item name="[[item]]">[[p18n('play.action.rate.window', item)]]</paper-item>
-            </template>
-          </mostly-select>
-        </div>
-        <div class="form-actions">
-          <iron-icon icon="mostly:remove" class="remove" on-tap="_removeRate"></iron-icon>
+          <template is="dom-if" if="[[rate.window]]" restamp>
+            <div class="form-row">
+              <div class="flex">
+                <mostly-input type="number"
+                        label="[[i18n('play.action.rate.count')]]"
+                        value="{{rate.count}}"
+                        required="[[rate.window]]"></mostly-input>
+              </div>
+              <div class="flex">
+                <mostly-input type="number"
+                        label="[[i18n('play.action.rate.frequency')]]"
+                        value="{{rate.frequency}}"
+                        required="[[rate.window]]"></mostly-input>
+              </div>
+              <div class="flex">
+                <mostly-select
+                        label="[[i18n('play.action.rate.interval')]]"
+                        placeholder="[[i18n('play.action.rate.interval.placeholder')]]"
+                        selected="{{rate.interval}}"
+                        attr-for-selected="name"
+                        required="[[rate.window]]">
+                  <template is="dom-repeat" items="[[rateIntervals]]" as="item">
+                    <paper-item name="[[item]]">[[p18n('play.action.rate.interval', item)]]</paper-item>
+                  </template>
+                </mostly-select>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
-
-      <template is="dom-if" if="[[rate.window]]" restamp>
-        <div class="form-row">
-          <div class="flex">
-            <mostly-input type="number"
-                    label="[[i18n('play.action.rate.count')]]"
-                    value="{{rate.count}}"
-                    required="[[rate.window]]"></mostly-input>
-          </div>
-          <div class="flex">
-            <mostly-input type="number"
-                    label="[[i18n('play.action.rate.frequency')]]"
-                    value="{{rate.frequency}}"
-                    required="[[rate.window]]"></mostly-input>
-          </div>
-          <div class="flex">
-            <mostly-select
-                    label="[[i18n('play.action.rate.interval')]]"
-                    placeholder="[[i18n('play.action.rate.interval.placeholder')]]"
-                    selected="{{rate.interval}}"
-                    attr-for-selected="name"
-                    required="[[rate.window]]">
-              <template is="dom-repeat" items="[[rateIntervals]]" as="item">
-                <paper-item name="[[item]]">[[p18n('play.action.rate.interval', item)]]</paper-item>
-              </template>
-            </mostly-select>
-          </div>
-        </div>
-      </template>
-    </div>
+    </mostly-collapse-button>
 
   </template>
 
@@ -84,6 +87,11 @@ Example:
           rate: {
             type: Object,
             value: {}
+          },
+
+          opened: {
+            type: Boolean,
+            value: false
           },
 
           /**
