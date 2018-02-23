@@ -18,10 +18,8 @@ Example:
       }
     </style>
 
-    <div role="widget" class="layout vertical">
-      <label>[[i18n('play.action.rate')]]</label>
-
-      <div role="widget" hidden$="[[!rate.window]]">
+    <div class="layout vertical">
+      <div hidden$="[[!rate.window]]">
         <iron-icon class="heading" icon="playing:tick"></iron-icon>
         [[i18n('play.action.rate.window.desc')]]
         <span class="action-object action-chance">[[rate.count]]</span>

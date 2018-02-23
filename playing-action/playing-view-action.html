@@ -32,7 +32,10 @@ Example:
     </div>
 
     <!-- variables -->
-    <playing-view-variables data=[[action.variables]]></playing-view-variables>
+    <div role="widget" class="layout vertical">
+      <label>[[i18n('play.rule.variables')]]</label>
+      <playing-view-variables data=[[action.variables]]></playing-view-variables>
+    </div>
 
     <!-- chance -->
     <div role="widget" class="layout vertical">
@@ -45,10 +48,16 @@ Example:
     </div>
     
     <!-- rate limiting -->
-    <playing-view-rate rate="{{action.rate}}"></playing-view-rate>
+    <div role="widget" class="layout vertical">
+      <label>[[i18n('play.action.rate')]]</label>
+      <playing-view-rate rate="{{action.rate}}"></playing-view-rate>
+    </div>
 
     <!-- rewards & conditions -->
-    <playing-view-rewardsets data=[[action.rules]]></playing-view-rewardsets>
+    <div role="widget" class="layout vertical">
+      <label role="widget">[[i18n('play.rule.rewardsets')]]</label>
+      <playing-view-rewardsets data=[[action.rules]]></playing-view-rewardsets>
+    </div>
 
   </template>
 
