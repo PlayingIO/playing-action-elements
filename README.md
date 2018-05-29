@@ -1,7 +1,7 @@
-Playing Game Action Web Components
-==================================
+Playing Game Actions Web Components
+===================================
 
-Game action management web components for playful applications.
+Game actions management web components for playful applications.
 
 # Usage
 
