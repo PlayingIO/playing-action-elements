@@ -163,7 +163,7 @@ Example:
 
       ready() {
         super.ready();
-        this.$.editActionForm.addEventListener('iron-form-presubmit', (event) => {
+        this.$.editActionForm.addEventListener('iron-form-presubmit', event => {
           event.preventDefault();
           this._saveAction();
         });
@@ -171,7 +171,7 @@ Example:
 
       _fetch() {
         if (typeof this.action === 'string') {
-          this.$.request.get().then((response) => {
+          this.$.request.get().then(response => {
             this.action = response.data;
             this.origAction = this.fp.clone(this.action);
           });
@@ -203,7 +203,7 @@ Example:
         this.page = 'viewer';
         var editedAction = JSON.parse(JSON.stringify(this.action));
         this.$.editRequest.data = editedAction;
-        this.$.editRequest.patch().then((response) => {
+        this.$.editRequest.patch().then(response => {
           this.action = response.data;
           this.origAction = this.fp.clone(this.action);
           this._toast(this.i18n('play.action.updated'));
@@ -216,7 +216,7 @@ Example:
 
       _deleteAction() {
         this.$.deleteActionDialog.toggle();
-        this.$.editRequest.remove().then((response) => {
+        this.$.editRequest.remove().then(response => {
           this.fire('playing-action-deleted', this.action);
           this._goHome();
         });

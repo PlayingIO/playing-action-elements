@@ -117,7 +117,7 @@
 
       ready() {
         super.ready();
-        this.$.form.addEventListener('iron-form-presubmit', (event) => {
+        this.$.form.addEventListener('iron-form-presubmit', event => {
           event.preventDefault();
           this._create();
         });
@@ -148,19 +148,19 @@
        * Creates a new action if the form was successfully submitted.
        */
       _create() {
-        this._doCreate(this.action).then((action) => {
+        this._doCreate(this.action).then(action => {
           this.resetFields();
           if (!this._createAnother) {
             this._goHome();
           }
-        }).catch((error) => {
+        }).catch(error => {
           this.errors = error.message;
         });
       }
 
       _doCreate(action) {
         this.$.request.data = action;
-        return this.$.request.post().then((response) => {
+        return this.$.request.post().then(response => {
           this.fire('playing-action-created', response.data);
         })
       }
